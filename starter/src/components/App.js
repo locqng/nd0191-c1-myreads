@@ -45,7 +45,6 @@ function App() {
   const searchBooks = async (keyword) => {
     const res = await BooksAPI.search(keyword);
     if (res.length > 0) {
-      console.log(addedBooksId);
       const processingBooks = res.filter(x => !(addedBooksId.some(y => y === x.id)));
       const mergedBooks = allBooks.concat(res.filter(
         x => !allBooks.some(y => y.id === x.id)));
