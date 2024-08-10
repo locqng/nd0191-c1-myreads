@@ -1,13 +1,19 @@
 import { useState } from "react";
 import * as BooksConst from "../utils/BooksConst"
-const Book = ({book, onUpdateShelf, shelfName, onRemoveFromShelf}) => {
+import PropTypes from "prop-types";
+
+const shelves = [
+    {id: "1", shelfName: BooksConst.CurrentlyReadingShelf, shelfDisplayName: "Currently Reading"},
+    {id: "2", shelfName: BooksConst.WantToReadShelf, shelfDisplayName: "Want to Read"},
+    {id: "3", shelfName: BooksConst.ReadShelf, shelfDisplayName: "Read"},
+    {id: "4", shelfName: BooksConst.NotInShelf, shelfDisplayName: "None"},
+];
+
+const Book = ({book, onUpdateShelf, shelfName}) => {
 
     const updateShelf = (event) => {
         onUpdateShelf(book, event.target.value);
         setShelf(event.target.value);
-        if (!!onRemoveFromShelf) {
-            onRemoveFromShelf(book.id);
-        }
     }
 
     const [shelf, setShelf] = useState(shelfName);
@@ -18,7 +24,7 @@ const Book = ({book, onUpdateShelf, shelfName, onRemoveFromShelf}) => {
                 <div className="book-top">
                 <div
                     className="book-cover"
-                    style={{
+                    style={{ 
                     width: 128,
                     height: 193,
                     backgroundImage:
@@ -27,15 +33,14 @@ const Book = ({book, onUpdateShelf, shelfName, onRemoveFromShelf}) => {
                 ></div>
                 <div className="book-shelf-changer">
                     <select defaultValue={shelf} onChange={updateShelf}>
-                    <option value={BooksConst.NotInShelf} disabled>
+                    <option value="" disabled>
                         Move to...
                     </option>
-                    <option value={BooksConst.CurrentlyReadingShelf}>
-                        Currently Reading
-                    </option>
-                    <option value={BooksConst.WantToReadShelf}>Want to Read</option>
-                    <option value={BooksConst.ReadShelf}>Read</option>
-                    {shelf !== BooksConst.NotInShelf && (<option value={BooksConst.NotInShelf}>None</option>)}
+                    {shelves.map(x => (
+                        <option value={x.shelfName}>
+                            {x.shelfDisplayName}
+                        </option>
+                    ))}
                     </select>
                 </div>
                 </div>
@@ -49,3 +54,9 @@ const Book = ({book, onUpdateShelf, shelfName, onRemoveFromShelf}) => {
 }
 
 export default Book;
+
+Book.propTypes = {
+    book: PropTypes.object,
+    onUpdateShelf: PropTypes.func,
+    shelfName: PropTypes.string
+}

@@ -1,5 +1,6 @@
 import ShelfRow from "./ShelfRow";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const BookShelf = ({bookShelf, onUpdateShelf}) => {
     return (
@@ -21,3 +22,8 @@ const BookShelf = ({bookShelf, onUpdateShelf}) => {
 }
 
 export default BookShelf;
+
+BookShelf.propTypes = {
+    bookShelf: PropTypes.array,
+    onUpdateShelf: PropTypes.func
+}

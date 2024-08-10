@@ -1,4 +1,5 @@
 import Book from "./Book";
+import PropTypes from "prop-types";
 
 const ShelfRow = ({row, onUpdateShelf}) => {
     return (
@@ -17,3 +18,8 @@ const ShelfRow = ({row, onUpdateShelf}) => {
 }
 
 export default ShelfRow;
+
+ShelfRow.propTypes = {
+    row: PropTypes.object,
+    onUpdateShelf: PropTypes.func
+}

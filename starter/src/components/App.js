@@ -1,6 +1,5 @@
 import "../css/App.css";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import {Route, Routes} from "react-router-dom";
 import * as BooksAPI from "../utils/BooksAPI"
 import * as BooksConst from "../utils/BooksConst"
@@ -12,8 +11,6 @@ function App() {
   const [allBooks, setAllBooks] = useState([]);
 
   const [bookShelf, setBookShelf] = useState([]);
-
-  const [addedBooksId, setAddedBooksId] = useState([]);
   
   useEffect(() => {
     const getAllBooks = async () => {
@@ -24,33 +21,27 @@ function App() {
         {key: BooksConst.WantToReadShelf ,name: "Want To Read" , books: response.filter(book => book.shelf === BooksConst.WantToReadShelf)},
         {key: BooksConst.ReadShelf ,name: "Read" , books: response.filter(book => book.shelf === BooksConst.ReadShelf)}
       ]);
-      const mergedBooks = response.map(x => x.id);
-      setAddedBooksId(mergedBooks)
     }
     getAllBooks();
   }, []);
   
   const updateBookShelf = async (book, shelfKey) => {
+    book.shelf = shelfKey;
     if (!book || !shelfKey) return;
     const res = await BooksAPI.update(book, shelfKey);
-    const mergedBooks = res[BooksConst.CurrentlyReadingShelf].concat(res[BooksConst.WantToReadShelf], res[BooksConst.ReadShelf]);
     setBookShelf([
       {key: BooksConst.CurrentlyReadingShelf ,name: "Currently Reading" , books: allBooks.filter(book => res[BooksConst.CurrentlyReadingShelf].includes(book.id))},
       {key: BooksConst.WantToReadShelf ,name: "Want To Read" , books: allBooks.filter(book => res[BooksConst.WantToReadShelf].includes(book.id))},
       {key: BooksConst.ReadShelf ,name: "Read" , books: allBooks.filter(book => res[BooksConst.ReadShelf].includes(book.id))}
     ]);
-    setAddedBooksId(mergedBooks)
+    if (!allBooks.some(x => x.id === book.id)) {
+      console.log(true);
+      setAllBooks([...allBooks, book]);
+    }      
   }
 
   const searchBooks = async (keyword) => {
-    const res = await BooksAPI.search(keyword);
-    if (res.length > 0) {
-      const processingBooks = res.filter(x => !(addedBooksId.some(y => y === x.id)));
-      const mergedBooks = allBooks.concat(res.filter(
-        x => !allBooks.some(y => y.id === x.id)));
-      setAllBooks(mergedBooks);
-      return processingBooks;  
-    }
+    const res = await BooksAPI.search(keyword);    
     return res;
   }
 
@@ -67,7 +58,7 @@ function App() {
         <Route 
           path="/search"
           element={
-            <SearchShelf onSearchBooks={searchBooks} onUpdateShelf={updateBookShelf}/>
+            <SearchShelf onSearchBooks={searchBooks} onUpdateShelf={updateBookShelf} addedBooks={allBooks}/>
           }
         />
       </Routes>
