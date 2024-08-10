@@ -5,7 +5,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 const SearchShelf = ({onSearchBooks, onUpdateShelf, addedBooks}) => {
-    
+
     const debounce = (func, timeout = 500) => {
         let timer;
         return (...args) => {
@@ -14,11 +14,11 @@ const SearchShelf = ({onSearchBooks, onUpdateShelf, addedBooks}) => {
         };
       }
     
-    const [searchedBooks, setSearchedBooks] = useState([]);
+    const [searchedBooks, setSearchedBooks] = useState(null);
     
     const searchBooks = async (event) => {
         if (event.target.value === '') {
-            setSearchedBooks([]);
+            setSearchedBooks(null);
             return;
         }
  
@@ -49,6 +49,7 @@ const SearchShelf = ({onSearchBooks, onUpdateShelf, addedBooks}) => {
                 />
             </div>
             </div>
+            {!!searchedBooks && (
             <div className="search-books-results">
                 <ol className="books-grid">
                     {searchedBooks.length > 0 ? (
@@ -64,6 +65,7 @@ const SearchShelf = ({onSearchBooks, onUpdateShelf, addedBooks}) => {
                     }
                 </ol>
             </div>
+            )}
         </div>
     );
 }

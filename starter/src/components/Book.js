@@ -37,7 +37,7 @@ const Book = ({book, onUpdateShelf, shelfName}) => {
                         Move to...
                     </option>
                     {shelves.map(x => (
-                        <option value={x.shelfName}>
+                        <option key={x.id} value={x.shelfName}>
                             {x.shelfDisplayName}
                         </option>
                     ))}
